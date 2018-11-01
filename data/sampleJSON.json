@@ -1,0 +1,23 @@
+{
+  "data" : [
+    {
+      "id" : 0,
+      "name" : "Tanuj",
+      "email" : "tanuj@gmail.com",
+      "mobile" : "7665517141"
+    },
+    {
+      "id" : 1,
+      "name" : "Shivam",
+      "email" : "shivam@gmail.com",
+      "mobile" : "8219976414"
+    },
+    {
+      "id" : 2,
+      "name" : "Rahul",
+      "email" : "rahul@gmail.com",
+      "mobile" : "9876543210"
+    }
+
+  ]
+}
