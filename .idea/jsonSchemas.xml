@@ -15,6 +15,12 @@
                   <Item>
                     <option name="path" value="modules/sampleJSON.json" />
                   </Item>
+                  <Item>
+                    <option name="path" value="data/sampleJSON.json" />
+                  </Item>
+                  <Item>
+                    <option name="path" value="data/a.json" />
+                  </Item>
                 </list>
               </option>
             </SchemaInfo>
