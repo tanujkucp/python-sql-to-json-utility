@@ -1,6 +1,6 @@
 
-file = open('data1.xml', 'r')
-contents = file.read();
+#file = open('data1.xml', 'r')
+#contents = file.read();
 
 def main(contents):
     str = xml2json(contents)
