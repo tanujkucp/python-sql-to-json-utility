@@ -1,10 +1,10 @@
 public class JSONmodel {
 
-	private int id;
-	private String mobile;
-	private String name;
 	private String email;
+	private int id;
+	private String name;
+	private String mobile;
 
-public JSONmodel() { }
+	public JSONmodel() { }
 
 }
