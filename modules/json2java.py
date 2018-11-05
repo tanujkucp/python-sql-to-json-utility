@@ -52,10 +52,10 @@ def parseJSON(contents):
 
 
 def writeToFile(file, allVariables):
-    file.write('public class JSONmodel {\n\n')
+    file.write('public class JavaModel {\n\n')
     for variable in allVariables:
         file.write('\tprivate '+allVariables[variable]+' '+variable+';\n')
-    file.write('\n\tpublic JSONmodel() { }\n\n}')
+    file.write('\n\tpublic JavaModel() { }\n\n}')
     file.close()
     print('Java model made successfully from JSON.\n')
     input=readFile()
@@ -66,7 +66,7 @@ def writeToFile(file, allVariables):
 
 def openOutputFile():
     try:
-        file = open('data/JSONmodel.java', 'w')
+        file = open('data/JavaModel.java', 'w')
         return file
     except IOError as e:
         print(e)
@@ -74,7 +74,7 @@ def openOutputFile():
 
 def readFile():
     try:
-        file = open('data/JSONmodel.java', 'r')
+        file = open('data/JavaModel.java', 'r')
         return file
     except IOError as e:
         print(e)
