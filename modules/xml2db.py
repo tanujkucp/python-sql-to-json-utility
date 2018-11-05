@@ -1,6 +1,11 @@
 import sqlite3 as sql
-file = open('data1.xml', 'r')
-contents = file.read();
+
+
+#file = open('data1.xml', 'r')
+#contents = file.read();
+
+
+
 def main(contents):
     dbCon = connectDB()
     all = xmltoDB(contents)
@@ -26,31 +31,33 @@ def xmltoDB(contents):
     array = content[1].strip()
     new = array[:len(content[1])-len(content[0])-3]
     new1 = new.strip()
-    sp = new.split('>',1)
-    tbname = sp[0]
+    sp = new.split('>', 1)
     spn = sp[0]+'>'
-    splitted  = new1.split(spn)
+    spn1 = new1.split(spn)
 
-    for row in splitted:
+    for row in spn1:
         row = row.strip()
         row1 = row[:-(len(spn)+1)]
         row1 = row1.strip()
         sprow = row1.split('<')
         sprowf = sprow[1::2]
-        list = []
-
+        dict = {}
         for i in sprowf:
             i1 = i.split('>')
             i2 = i1[1]
-            if i2.isdigit():
-                list.append(int(i2))
+            j1 = i1[0]
+            key = j1.strip()
+            value = i2.strip()
+
+            if value.isdigit():
+                dict[key] = int(value)
             else:
-                i3 = '"'+i2+'"'
-                list.append(i3)
-        t = tuple(list)
-        all.append(t)
-        all1 = all[1:]
-    return all1
+                dict[key] =value
+        if dict:
+           t = (dict['id'],dict['name'],dict['email'],dict['mobile'])
+           t = tuple(t)
+           all.append(t)
+    return all
 
 def insertToDB(db, tuples):
     try:
@@ -70,4 +77,4 @@ def fetch(db):
             print(row)
     except:
         print('An error occurred while fetching data!\n')
-main(contents)
+#main(contents)

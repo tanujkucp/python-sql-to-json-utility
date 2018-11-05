@@ -2,7 +2,6 @@
 # other modules will also be made as other python files under this folder 'modules'
 import sqlite3 as sql
 
-
 def main(contents):
     db = connectDB()
     tuples = parseJSON(contents)
@@ -52,6 +51,7 @@ def parseJSON(contents):
                     allValues[tag]=int(value[0])
                 else:
                     allValues[tag]=value[1]
+            print(allValues)
             tup = (allValues['id'], allValues['name'], allValues['email'], allValues['mobile'])
             tuples.append(tup)
         return tuples
@@ -77,3 +77,4 @@ def fetch(db):
             print(row)
     except:
         print('An error occurred while fetching data!\n')
+
