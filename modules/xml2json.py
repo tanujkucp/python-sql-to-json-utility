@@ -21,6 +21,7 @@ def xml2json(contents):
     tbname = sp[0]
     spn = sp[0] + '>'
     splitted = new1.split(spn)
+
     for row in splitted:
         row = row.strip()
         row1 = row[:-(len(spn) + 1)]
@@ -28,7 +29,6 @@ def xml2json(contents):
         sprow = row1.split('<')
         sprowf = sprow[1::2]
         list = []
-
 
         for i in sprowf:
             i1 = i.split('>')
@@ -49,7 +49,6 @@ def xml2json(contents):
     str2 = ''.join(all1)
     str2 = str2[:-1]
     str3 = '{\n'+'"'+mainName+'"'+':['+str2+'\n]\n}'
-
     return str3
 
 def writeFile(str):
@@ -60,6 +59,4 @@ def writeFile(str):
     except:
         print("File name already exists, try another name")
 
-
-
-main(contents)
+#main(contents)
