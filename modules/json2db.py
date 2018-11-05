@@ -1,11 +1,12 @@
-## all the source code for the first module (part) of the project goes here
-## other modules will also be made as other python files under this folder 'modules'
+# all the source code for the first module (part) of the project goes here
+# other modules will also be made as other python files under this folder 'modules'
 import sqlite3 as sql
+
 
 def main(contents):
     db = connectDB()
     tuples = parseJSON(contents)
-    if dict is not None:
+    if tuples is not None:
         insertToDB(db, tuples)
     fetch(db)
 
@@ -37,20 +38,22 @@ def parseJSON(contents):
             row = row.strip()
             keys = row.split(',')
             if len(keys) > 4:
-                del keys[len(keys)-1]
-            all=[]
+                del keys[len(keys) - 1]
+            allValues = {}
             for key in keys:
                 key = key.strip()
-                pair=key.split(':',2)
-                value=pair[1].strip()
-                value=value.split('"',2)
+                pair = key.split(':', 2)
+                tag=pair[0].strip()
+                tag = tag.split('"',2)
+                tag=tag[1]
+                value = pair[1].strip()
+                value = value.split('"', 2)
                 if value[0] != '':
-                    all.append(int(value[0]))
+                    allValues[tag]=int(value[0])
                 else:
-                    all.append(value[1])
-            tup=tuple(all)
+                    allValues[tag]=value[1]
+            tup = (allValues['id'], allValues['name'], allValues['email'], allValues['mobile'])
             tuples.append(tup)
-
         return tuples
 
 
@@ -59,18 +62,18 @@ def insertToDB(db, tuples):
         cursor = db.cursor()
         cursor.executemany('''INSERT INTO CONTACTS(id, name, email, phone) VALUES(?,?,?,?)''', tuples)
         db.commit()
+        print('Data imported successfully!')
     except:
         print('An error occurred while adding data!\n')
 
 
 def fetch(db):
     try:
-        cursor=db.cursor()
+        cursor = db.cursor()
         cursor.execute('SELECT * FROM CONTACTS')
-        data=cursor.fetchall()
+        data = cursor.fetchall()
         print('Table contains-\n')
         for row in data:
             print(row)
     except:
         print('An error occurred while fetching data!\n')
-
