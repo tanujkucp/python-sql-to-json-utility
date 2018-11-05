@@ -1,7 +1,4 @@
 
-#file = open('data1.xml', 'r')
-#contents = file.read();
-
 def main(contents):
     str = xml2json(contents)
     writeFile(str)
@@ -18,7 +15,6 @@ def xml2json(contents):
     new = array[:len(content[1]) - len(content[0]) - 3]
     new1 = new.strip()
     sp = new.split('>', 1)
-    tbname = sp[0]
     spn = sp[0] + '>'
     splitted = new1.split(spn)
 
@@ -58,5 +54,3 @@ def writeFile(str):
         f.write(str)
     except:
         print("File name already exists, try another name")
-
-#main(contents)

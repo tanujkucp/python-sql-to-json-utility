@@ -1,18 +1,16 @@
 import sqlite3 as sql
-file = open('data1.xml', 'r')
-contents = file.read();
+
+
 def main(contents):
     dbCon = connectDB()
     all = xmltoDB(contents)
     if dict is not None:
-       insertToDB(dbCon,all)
+        insertToDB(dbCon, all)
     fetch(dbCon)
+
 
 def connectDB():
     con = sql.connect('Data.db')
-
-
-
     query = 'CREATE TABLE IF NOT EXISTS CONTACTS(id INT PRIMARY KEY, name VARCHAR(30), email VARCHAR(30), phone VARCHAR(15))'
     con.execute(query)
     con.commit()
@@ -20,20 +18,19 @@ def connectDB():
 
 
 def xmltoDB(contents):
-    all=[]
+    all = []
     contents = contents.strip()
-    content = contents.split('>',1)
+    content = contents.split('>', 1)
     array = content[1].strip()
-    new = array[:len(content[1])-len(content[0])-3]
+    new = array[:len(content[1]) - len(content[0]) - 3]
     new1 = new.strip()
-    sp = new.split('>',1)
-    tbname = sp[0]
-    spn = sp[0]+'>'
-    splitted  = new1.split(spn)
+    sp = new.split('>', 1)
+    spn = sp[0] + '>'
+    splitted = new1.split(spn)
 
     for row in splitted:
         row = row.strip()
-        row1 = row[:-(len(spn)+1)]
+        row1 = row[:-(len(spn) + 1)]
         row1 = row1.strip()
         sprow = row1.split('<')
         sprowf = sprow[1::2]
@@ -45,12 +42,13 @@ def xmltoDB(contents):
             if i2.isdigit():
                 list.append(int(i2))
             else:
-                i3 = '"'+i2+'"'
+                i3 = i2
                 list.append(i3)
         t = tuple(list)
         all.append(t)
         all1 = all[1:]
     return all1
+
 
 def insertToDB(db, tuples):
     try:
@@ -60,14 +58,14 @@ def insertToDB(db, tuples):
     except:
         print('An error occurred while adding data!\n')
 
+
 def fetch(db):
     try:
-        cursor=db.cursor()
+        cursor = db.cursor()
         cursor.execute('SELECT * FROM CONTACTS')
-        data=cursor.fetchall()
+        data = cursor.fetchall()
         print('Table contains-\n')
         for row in data:
             print(row)
     except:
         print('An error occurred while fetching data!\n')
-main(contents)

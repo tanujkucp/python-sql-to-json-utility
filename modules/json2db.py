@@ -1,8 +1,6 @@
 ## all the source code for the first module (part) of the project goes here
 ## other modules will also be made as other python files under this folder 'modules'
 import sqlite3 as sql
-file = open('b.json', 'r')
-contents = file.read();
 
 def main(contents):
     db = connectDB()
@@ -76,4 +74,3 @@ def fetch(db):
     except:
         print('An error occurred while fetching data!\n')
 
-main(contents)
