@@ -20,8 +20,8 @@
       "mobile" : "9876543210"
     },
     {
+      "name" : "tokir",
       "id" : 3,
-      "name" : "Tokir",
       "email" : "tokir@gmail.com",
       "mobile" : "0123456789"
  }
