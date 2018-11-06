@@ -1,6 +1,4 @@
 
-#file = open('data1.xml', 'r')
-#contents = file.read();
 
 def main(contents):
     str = xml2json(contents)
@@ -8,8 +6,6 @@ def main(contents):
 
 def xml2json(contents):
     all = []
-    str2 =''
-    str3 = ''
     contents = contents.strip()
     content = contents.split('>', 1)
     array = content[1].strip()
@@ -18,7 +14,6 @@ def xml2json(contents):
     new = array[:len(content[1]) - len(content[0]) - 3]
     new1 = new.strip()
     sp = new.split('>', 1)
-    tbname = sp[0]
     spn = sp[0] + '>'
     splitted = new1.split(spn)
 
@@ -54,9 +49,8 @@ def xml2json(contents):
 def writeFile(str):
     try:
         filename = input('Enter filename you want to save as json:')
-        f = open(filename + '.json', 'w+')
+        f = open('data/'+filename + '.json', 'w+')
         f.write(str)
+        print('JSON file created successfully!')
     except:
         print("File name already exists, try another name")
-
-#main(contents)
