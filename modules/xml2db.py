@@ -1,8 +1,8 @@
 import sqlite3 as sql
 
 
-#file = open('data1.xml', 'r')
-#contents = file.read();
+file = open('data1.xml', 'r')
+contents = file.read();
 
 
 
@@ -34,7 +34,7 @@ def xmltoDB(contents):
     sp = new.split('>', 1)
     spn = sp[0]+'>'
     spn1 = new1.split(spn)
-
+    count= 0
     for row in spn1:
         row = row.strip()
         row1 = row[:-(len(spn)+1)]
@@ -42,6 +42,9 @@ def xmltoDB(contents):
         sprow = row1.split('<')
         sprowf = sprow[1::2]
         dict = {}
+        list = []
+        #list1=[]
+        count = count +1
         for i in sprowf:
             i1 = i.split('>')
             i2 = i1[1]
@@ -53,10 +56,22 @@ def xmltoDB(contents):
                 dict[key] = int(value)
             else:
                 dict[key] =value
+            list.append(key)
+        if list:
+           if count is 2 :
+               if list is not None:
+                   list1 = list
+                   if list1:
+                       print(list1)
+                   else:
+                       continue
+
+        #print(list1)
         if dict:
            t = (dict['id'],dict['name'],dict['email'],dict['mobile'])
            t = tuple(t)
            all.append(t)
+
     return all
 
 def insertToDB(db, tuples):
@@ -77,4 +92,4 @@ def fetch(db):
             print(row)
     except:
         print('An error occurred while fetching data!\n')
-#main(contents)
+main(contents)
