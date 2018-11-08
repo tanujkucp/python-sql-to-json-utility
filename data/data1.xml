@@ -1,15 +1,20 @@
 <students>
+
 <student>
-   <id>0</id>
-   <name>Shivam</name>
-   <email>shivamgurjar@gmail.com</email>
+   <id>0                  </id>
+   <name>Shivam          </name>
+   <email>          shivamgurjar@gmail.com</email>
    <mobile>8821907414</mobile>
 </student>
 <student>
    <id>1</id><name>Tanuj</name>
-   <email>tanuj@gmail.com</email>
-   <mobile>8821907414</mobile>
+   <email>
+      tanuj@gmail.com
+    </email>
+   <mobile>             8821907414</mobile>
 </student>
+
+
 <student>
    <name>Rahul</name>
    <id>2</id>
@@ -17,4 +22,6 @@
    <email>rahul@gmail.com</email>
 
 </student>
+
+
 </students>

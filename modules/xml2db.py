@@ -22,13 +22,15 @@ def xmltoDB(contents):
     contents = contents.strip()
     content = contents.split('>', 1)
     array = content[1].strip()
-    new = array[:len(content[1]) - len(content[0]) - 3]
+    array = array.strip()
+    new = array[1:len(content[1]) - len(content[0]) - 3]
     new1 = new.strip()
     sp = new.split('>', 1)
     spn = sp[0] + '>'
     spn1 = new1.split(spn)
+    spn2 = spn1[1:]
 
-    for row in spn1:
+    for row in spn2:
         row = row.strip()
         row1 = row[:-(len(spn) + 1)]
         row1 = row1.strip()
@@ -37,7 +39,7 @@ def xmltoDB(contents):
         dict = {}
         for i in sprowf:
             i1 = i.split('>')
-            i2 = i1[1]
+            i2 = i1[1].strip()
             j1 = i1[0]
             key = j1.strip()
             value = i2.strip()
