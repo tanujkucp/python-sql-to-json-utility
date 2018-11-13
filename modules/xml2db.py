@@ -58,7 +58,7 @@ def xmltoDB(contents):
 def insertToDB(db, tuples):
     try:
         cursor = db.cursor()
-        cursor.executemany('''INSERT INTO CONTACTS(id, name, email, phone) VALUES(?,?,?,?)''', tuples)
+        cursor.executemany('''INSERT INTO CONTACTS(id , name, email, phone) VALUES(?,?,?,?)''', tuples)
         db.commit()
         print('Data imported successfully!')
     except:
