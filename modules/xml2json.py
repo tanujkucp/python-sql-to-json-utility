@@ -37,9 +37,10 @@ def xml2json(contents):
             list.append(i3)
         str = ''.join(list)
         str = str[:-2]
-        str1 = '\n{\n' + str + '},'
-        all.append(str1)
-    all1 = all[1:]
+        if str:
+            str1 = '\n{\n' + str + '},'
+            all.append(str1)
+    all1 = all[:]
     str2 = ''.join(all1)
     str2 = str2[:-1]
     str3 = '{\n' + '"' + mainName + '"' + ':[' + str2 + '\n]\n}'
