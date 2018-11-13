@@ -1,7 +1,7 @@
-
 def main(contents):
     str = xml2json(contents)
     writeFile(str)
+
 
 def xml2json(contents):
     all = []
@@ -15,7 +15,7 @@ def xml2json(contents):
     sp = new.split('>', 1)
     spn = sp[0] + '>'
     splitted = new1.split(spn)
-    #splitted1 = splitted[1:]
+
     for row in splitted:
         row = row.strip()
         row1 = row[:-(len(spn) + 1)]
@@ -28,12 +28,12 @@ def xml2json(contents):
             i1 = i.split('>')
             i2 = i1[1].strip()
             j1 = i1[0]
-            j1=j1.strip()
-            if i2.isdigit() and j1=='id':
+            j1 = j1.strip()
+            if i2.isdigit() and j1 == 'id':
                 i3 = i2
             else:
                 i3 = '"' + i2 + '"'
-            i3 = '"'+j1+'"'+' : '+i3+',\n'
+            i3 = '"' + j1 + '"' + ' : ' + i3 + ',\n'
             list.append(i3)
         str = ''.join(list)
         str = str[:-2]
@@ -42,15 +42,15 @@ def xml2json(contents):
     all1 = all[1:]
     str2 = ''.join(all1)
     str2 = str2[:-1]
-    str3 = '{\n'+'"'+mainName+'"'+':['+str2+'\n]\n}'
+    str3 = '{\n' + '"' + mainName + '"' + ':[' + str2 + '\n]\n}'
     return str3
+
 
 def writeFile(str):
     try:
         filename = input('Enter filename you want to save as json:')
-        f = open('data/'+filename +'.json', 'w+')
+        f = open('data/' + filename + '.json', 'w+')
         f.write(str)
         print('JSON file created successfully!')
     except:
-        print("File name already exists, try another name")
-#main(contents)
+        print("An error occurred!")
