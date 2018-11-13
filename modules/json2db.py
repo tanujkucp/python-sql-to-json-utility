@@ -1,6 +1,7 @@
 # all the source code for the first module (part) of the project goes here
 # other modules will also be made as other python files under this folder 'modules'
-import sqlite3 as sql
+# import sqlite3 as sql
+import mysql.connector
 
 
 def main(contents):
@@ -12,12 +13,16 @@ def main(contents):
 
 
 def connectDB():
-    con = sql.connect('Primary.db')
-    # creating a new table
+    mydb = mysql.connector.connect(user='root',
+                                   password='123',
+                                   host='localhost',
+                                   database='tanuj'
+                                   )
     query = 'CREATE TABLE IF NOT EXISTS CONTACTS(id INT PRIMARY KEY, name VARCHAR(30), email VARCHAR(30), phone VARCHAR(15))'
-    con.execute(query)
-    con.commit()
-    return con
+    cursor = mydb.cursor()
+    cursor.execute(query)
+    mydb.commit()
+    return mydb
 
 
 def parseJSON(contents):
@@ -43,15 +48,15 @@ def parseJSON(contents):
             for key in keys:
                 key = key.strip()
                 pair = key.split(':', 2)
-                tag=pair[0].strip()
-                tag = tag.split('"',2)
-                tag=tag[1]
+                tag = pair[0].strip()
+                tag = tag.split('"', 2)
+                tag = tag[1]
                 value = pair[1].strip()
                 value = value.split('"', 2)
                 if value[0] != '':
-                    allValues[tag]=int(value[0])
+                    allValues[tag] = int(value[0])
                 else:
-                    allValues[tag]=value[1]
+                    allValues[tag] = value[1]
             tup = (allValues['id'], allValues['name'], allValues['email'], allValues['mobile'])
             tuples.append(tup)
         return tuples
@@ -60,7 +65,7 @@ def parseJSON(contents):
 def insertToDB(db, tuples):
     try:
         cursor = db.cursor()
-        cursor.executemany('''INSERT INTO CONTACTS(id, name, email, phone) VALUES(?,?,?,?)''', tuples)
+        cursor.executemany('''INSERT INTO CONTACTS(id, name, email, phone) VALUES(%s,%s,%s,%s)''', tuples)
         db.commit()
         print('Data imported successfully!')
     except:
