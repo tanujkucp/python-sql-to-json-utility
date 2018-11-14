@@ -1,5 +1,5 @@
-import sqlite3 as sql
-
+#import sqlite3 as sql
+import mysql.connector
 
 def main(contents):
     dbCon = connectDB()
@@ -10,11 +10,16 @@ def main(contents):
 
 
 def connectDB():
-    con = sql.connect('Data.db')
-    query = 'CREATE TABLE IF NOT EXISTS CONTACTS(id INT PRIMARY KEY, name VARCHAR(30), email VARCHAR(30), phone VARCHAR(15))'
-    con.execute(query)
-    con.commit()
-    return con
+    mydb = mysql.connector.connect(user='root',
+                                   password='123',
+                                   host='localhost',
+                                   database='tanuj'
+                                   )
+    query = 'CREATE TABLE IF NOT EXISTS CONTACTS2(id INT PRIMARY KEY, name VARCHAR(30), email VARCHAR(30), phone VARCHAR(15))'
+    cursor = mydb.cursor()
+    cursor.execute(query)
+    mydb.commit()
+    return mydb
 
 
 def xmltoDB(contents):
@@ -58,7 +63,7 @@ def xmltoDB(contents):
 def insertToDB(db, tuples):
     try:
         cursor = db.cursor()
-        cursor.executemany('''INSERT INTO CONTACTS(id , name, email, phone) VALUES(?,?,?,?)''', tuples)
+        cursor.executemany('''INSERT INTO CONTACTS2(id, name, email, phone) VALUES(%s,%s,%s,%s)''', tuples)
         db.commit()
         print('Data imported successfully!')
     except:
@@ -68,7 +73,7 @@ def insertToDB(db, tuples):
 def fetch(db):
     try:
         cursor = db.cursor()
-        cursor.execute('SELECT * FROM CONTACTS')
+        cursor.execute('SELECT * FROM CONTACTS2')
         data = cursor.fetchall()
         print('Table contains-\n')
         for row in data:
