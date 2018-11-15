@@ -1,7 +1,12 @@
+from flask import jsonify
+
+
 def main(contents):
     str = xml2json(contents)
     writeFile(str)
-
+    text={'content':str}
+    text=jsonify(text)
+    return text
 
 def xml2json(contents):
     all = []
@@ -49,9 +54,8 @@ def xml2json(contents):
 
 def writeFile(str):
     try:
-        filename = input('Enter filename you want to save as json:')
-        f = open('data/' + filename + '.json', 'w+')
+        f = open('data/outputJSON.json', 'w+')
         f.write(str)
         print('JSON file created successfully!')
     except:
-        print("An error occurred!")
+        print("An error occurred in file creation!")

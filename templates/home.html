@@ -1,16 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Bootstrap Example</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>JSON-XML Utility</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body style="background-color: #B3E5FC">
 
-<button type="button" class="btn btn-success">Success</button>
+<center>
+    <form action="/uploader" method="POST" id="form" enctype="multipart/form-data">
+        <div style="width :80%;background-color: #B3E5FC">
+            <div class="panel panel-default">
+
+                <div class="well bg-success" style="height:75px;background-color: #FFFFFF;">
+                    <div class='well' style="width: 65%;background-color: #FFFFFF;">
+                        <h1 style="font-size:30px;width: 75%;height:50px;">JSON-XML UTILITY</h1></div>
+                </div>
+                <div style="height: 4px;background-color:#4FC3F7;">
+                </div>
+
+                <div style="margin-top: 10px;">
+                    <p style="font-size: 25px">Which type of file do you have?</p>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div style="margin-top: 10px;">
+
+                            <input id="upload_button" type="file" name="file" class="btn btn-default"/>
+                            <button id="choose" type="button" class="btn btn-default"
+                                    style="font-size: 18px;margin-top:5px;margin-bottom: 10px;width: 40%;height: 50px;">Upload File
+                            </button>
+
+
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div style="margin-top: 40px;">
+                            <button id="clear" type="button" class="btn btn-default"
+                                    style="font-size: 18px;margin-bottom: 20px;width: 40%;height: 50px;">Clear all
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</center>
+<center>
+    <div style="margin-top:10px;width:80%;">
+                    <div class="col-sm-5" style="background-color: #B3E5FC">
+                        <div class="well" style="background-color: #FFFFFF;">
+                            <h4 id="filename_source">No file selected</h4>
+                            <pre>
+                            <p style="font-size:15px;" align="left" id="source_content">...</p>
+                            </pre>
+                        </div>
+                    </div>
+                    <div class="col-sm-2" style="background-color: #B3E5FC">
+                        <div style="background-color: #B3E5FC;">
+                            <button id="button1" type="button" class="btn btn-default"
+                                    style="font-size: 18px;margin-bottom: 40px;margin-top: 10dp;height: 50px;width: 100%;">
+                                ...
+                            </button>
+                            <br>
+                            <button id="button2" type="button" class="btn btn-default"
+                                    style="font-size: 16px;margin-bottom: 40px;height: 50px;width: 100%;">...
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-sm-5" style="background-color: #B3E5FC">
+                        <div class="well" style="background-color:#FFFFFF;">
+                            <h4 id="filename_result">No file selected</h4>
+                            <pre>
+                            <p style="font-size:15px;" align="left" id="result_content">...</p>
+                            </pre>
+                        </div>
+                    </div>
+
+    </div>
+
+
+</center>
+
+<script>
+//to clear all the controls
+
+$(document).ready(function(){
+    $("#clear").click(function(){
+        $('#filename_source').html('No file selected')
+		$('#source_content').html('...')
+		$('#button1').html('...')
+		$('#button2').html('...')
+        $('#upload_button').html('')
+    });
+
+});
+
+//to upload and read the file
+var ext;
+$(document).ready(function(){
+ $("#choose").click(function(){
+ var filename = $('input[type=file]').val().split('\\').pop();
+ console.log('File selected: '+filename);
+ ext=filename.split('.');
+ ext = ext[1];
+ if(ext!='json' && ext!='xml'){
+ alert('Only JSON and XML files are supported! Try again.');
+ }else{
+ var form_data = new FormData($('#form')[0]);
+        $.ajax({
+					url: '/uploader',
+					data: form_data,
+					method: 'POST',
+					contentType: false,
+                    cache: false,
+                    processData: false,
+					success: function(data) {
+						$('#filename_source').html('Source File: '+data['filename'])
+						$('#filename_result').html('Result')
+						console.log(data['content']);
+						if(ext=='json'){
+						    $('#button1').html('Import to SQL')
+						    $('#button2').html('Convert to Java')
+						    $('#source_content').html(''+data['content'])
+						}else{
+						    $('#button1').html('Import to SQL')
+						    $('#button2').html('Convert to JSON')
+                            $('#source_content').html(''+htmlEntities(data['content']))
+						}
+
+						alert('File uploaded successfully!');
+					}
+				});
+ }
+
+    });
+});
+
+//for formatting xml string
+function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+//for converting to java class
+$(document).ready(function(){
+ $("#button2").click(function(){
+    url='';
+     if(ext=='json') url='/json/2';
+     else url='/xml/2';
+            $.ajax({
+				    url: url,
+					data: {},
+					method: 'POST',
+					success: function(data) {
+						$('#result_content').html(data['content'])
+						console.log(data['content']);
+						alert('File created successfully!');
+					}
+			});
+
+    });
+});
+
+//for importing to SQL server
+$(document).ready(function(){
+ $("#button1").click(function(){
+    url='';
+     if(ext=='json') url='/json/1';
+     else url='/xml/1';
+            $.ajax({
+				    url: url,
+					data: {},
+					method: 'POST',
+					success: function(data) {
+						$('#result_content').html(data['content'])
+						console.log(data['content']);
+						alert('Data imported successfully!');
+					}
+			});
+
+    });
+});
+
+</script>
 
 </body>
+
 </html>

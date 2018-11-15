@@ -1,10 +1,13 @@
-
+from flask import jsonify
 
 def main(contents):
     allVariables = parseJSON(contents)
     file = openOutputFile()
     if file is not None and allVariables is not None:
-        writeToFile(file,allVariables)
+        text=writeToFile(file,allVariables)
+        text={'content':text}
+        text=jsonify(text)
+        return text
 
 
 def parseJSON(contents):
@@ -61,12 +64,12 @@ def writeToFile(file, allVariables):
     input=readFile()
     if input is not None:
         text = input.read()
-        print(text)
+        return text
 
 
 def openOutputFile():
     try:
-        file = open('data/JavaModel.java', 'w')
+        file = open('data/outputJava.java', 'w')
         return file
     except IOError as e:
         print(e)
@@ -74,7 +77,7 @@ def openOutputFile():
 
 def readFile():
     try:
-        file = open('data/JavaModel.java', 'r')
+        file = open('data/outputJava.java', 'r')
         return file
     except IOError as e:
         print(e)
