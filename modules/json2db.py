@@ -2,6 +2,9 @@
 # other modules will also be made as other python files under this folder 'modules'
 # import sqlite3 as sql
 import mysql.connector
+from flask import jsonify
+
+status = True
 
 
 def main(contents):
@@ -9,7 +12,11 @@ def main(contents):
     tuples = parseJSON(contents)
     if tuples is not None:
         insertToDB(db, tuples)
-    fetch(db)
+    text = fetch(db)
+    text = {'content': text}
+    text['status'] = status
+    text = jsonify(text)
+    return text
 
 
 def connectDB():
@@ -68,8 +75,12 @@ def insertToDB(db, tuples):
         cursor.executemany('''INSERT INTO CONTACTS(id, name, email, phone) VALUES(%s,%s,%s,%s)''', tuples)
         db.commit()
         print('Data imported successfully!')
+        global status
+        status = True
     except:
         print('An error occurred while adding data!\n')
+        global status
+        status = False
 
 
 def fetch(db):
@@ -78,7 +89,7 @@ def fetch(db):
         cursor.execute('SELECT * FROM CONTACTS')
         data = cursor.fetchall()
         print('Table contains-\n')
-        for row in data:
-            print(row)
+        print(data)
+        return data
     except:
         print('An error occurred while fetching data!\n')

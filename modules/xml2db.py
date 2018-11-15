@@ -1,12 +1,19 @@
 #import sqlite3 as sql
 import mysql.connector
+from flask import jsonify
+
+status = True
 
 def main(contents):
     dbCon = connectDB()
     all = xmltoDB(contents)
     if dbCon is not None and all is not None:
         insertToDB(dbCon, all)
-    fetch(dbCon)
+    text=fetch(dbCon)
+    text = {'content': text}
+    text['status'] = status
+    text = jsonify(text)
+    return text
 
 
 def connectDB():
@@ -66,8 +73,12 @@ def insertToDB(db, tuples):
         cursor.executemany('''INSERT INTO CONTACTS2(id, name, email, phone) VALUES(%s,%s,%s,%s)''', tuples)
         db.commit()
         print('Data imported successfully!')
+        global status
+        status = True
     except:
         print('An error occurred while adding data!\n')
+        global status
+        status = False
 
 
 def fetch(db):
@@ -76,7 +87,7 @@ def fetch(db):
         cursor.execute('SELECT * FROM CONTACTS2')
         data = cursor.fetchall()
         print('Table contains-\n')
-        for row in data:
-            print(row)
+        print(data)
+        return data
     except:
         print('An error occurred while fetching data!\n')

@@ -47,6 +47,13 @@ def json2java():
 def xml2json():
     return x2j.main(content)
 
+@app.route('/json/1',methods=['GET','POST'])
+def json2db():
+    return j2db.main(content)
+
+@app.route('/xml/1',methods=['GET','POST'])
+def xml2db():
+    return x2db.main(content)
 
 def readFile(name):
     try:

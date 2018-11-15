@@ -23,7 +23,7 @@
                 </div>
 
                 <div style="margin-top: 10px;">
-                    <p style="font-size: 25px">Which type of file do you have?</p>
+                    <p style="font-size: 25px">Choose and upload the source file.</p>
                 </div>
 
 
@@ -53,7 +53,7 @@
     </form>
 </center>
 <center>
-    <div style="margin-top:10px;width:80%;">
+    <div style="margin-top:10px;width:90%;">
                     <div class="col-sm-5" style="background-color: #B3E5FC">
                         <div class="well" style="background-color: #FFFFFF;">
                             <h4 id="filename_source">No file selected</h4>
@@ -90,14 +90,19 @@
 
 <script>
 //to clear all the controls
-
+$('#button1').prop('disabled', true);
+$('#button2').prop('disabled', true);
 $(document).ready(function(){
     $("#clear").click(function(){
         $('#filename_source').html('No file selected')
+        $('#filename_result').html('No file selected')
 		$('#source_content').html('...')
+		$('#result_content').html('...')
 		$('#button1').html('...')
 		$('#button2').html('...')
         $('#upload_button').html('')
+        $('#button1').prop('disabled', true);
+        $('#button2').prop('disabled', true);
     });
 
 });
@@ -134,7 +139,8 @@ $(document).ready(function(){
 						    $('#button2').html('Convert to JSON')
                             $('#source_content').html(''+htmlEntities(data['content']))
 						}
-
+                        $('#button1').prop('disabled', false);
+                        $('#button2').prop('disabled', false);
 						alert('File uploaded successfully!');
 					}
 				});
@@ -151,7 +157,7 @@ function htmlEntities(str) {
 //for converting to java class
 $(document).ready(function(){
  $("#button2").click(function(){
-    url='';
+     url='';
      if(ext=='json') url='/json/2';
      else url='/xml/2';
             $.ajax({
@@ -162,6 +168,7 @@ $(document).ready(function(){
 						$('#result_content').html(data['content'])
 						console.log(data['content']);
 						alert('File created successfully!');
+						$('#filename_result').html('Output file contains-')
 					}
 			});
 
@@ -179,9 +186,24 @@ $(document).ready(function(){
 					data: {},
 					method: 'POST',
 					success: function(data) {
-						$('#result_content').html(data['content'])
 						console.log(data['content']);
-						alert('Data imported successfully!');
+						if(data['status']) alert('Data imported successfully!');
+						else alert('Import failed, Similar data already exists!');
+						$('#filename_result').html('Database contains-')
+						var array=data['content'];
+						var text='<table class="table table-hover">';
+						text+='<tr><th>id</th><th>name</th><th>email</th><th>phone</th></tr>';
+						array.forEach(function(value){
+						    text+='<tr>';
+						    value.forEach(function(item){
+						        text+='<td>'+item+'</td>';
+						    });
+						    text+='</tr>';
+						});
+						text+='</table>';
+						$('#result_content').html(text)
+						console.log(text);
+
 					}
 			});
 
