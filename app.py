@@ -7,7 +7,6 @@ import modules.json2java as j2java
 import modules.xml2db as x2db
 import modules.xml2json as x2j
 
-
 app = Flask(__name__)
 
 
@@ -22,7 +21,9 @@ def square():
     data = jsonify(data)
     return data
 
-content=''
+
+content = ''
+
 
 @app.route('/uploader', methods=['GET', 'POST'])
 def upload_file():
@@ -35,25 +36,30 @@ def upload_file():
         data = {'filename': filename}
         global content
         content = text if text is not None else 'Could not read file!'
-        data['content']=content
+        data['content'] = content
         data = jsonify(data)
         return data
 
-@app.route('/json/2',methods=['GET','POST'])
+
+@app.route('/json/2', methods=['GET', 'POST'])
 def json2java():
     return j2java.main(content)
 
-@app.route('/xml/2',methods=['GET','POST'])
+
+@app.route('/xml/2', methods=['GET', 'POST'])
 def xml2json():
     return x2j.main(content)
 
-@app.route('/json/1',methods=['GET','POST'])
+
+@app.route('/json/1', methods=['GET', 'POST'])
 def json2db():
     return j2db.main(content)
 
-@app.route('/xml/1',methods=['GET','POST'])
+
+@app.route('/xml/1', methods=['GET', 'POST'])
 def xml2db():
     return x2db.main(content)
+
 
 def readFile(name):
     try:
