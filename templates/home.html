@@ -14,30 +14,22 @@
     <form action="/uploader" method="POST" id="form" enctype="multipart/form-data">
         <div style="width :80%;background-color: #B3E5FC">
             <div class="panel panel-default">
-
                 <div class="well bg-success" style="height:75px;background-color: #FFFFFF;">
                     <div class='well' style="width: 65%;background-color: #FFFFFF;">
                         <h1 style="font-size:30px;width: 75%;height:50px;">JSON-XML UTILITY</h1></div>
                 </div>
-                <div style="height: 4px;background-color:#4FC3F7;">
-                </div>
-
+                <div style="height: 4px;background-color:#4FC3F7;"></div>
                 <div style="margin-top: 10px;">
                     <p style="font-size: 25px">Choose and upload the source file.</p>
                 </div>
-
-
                 <div class="row">
                     <div class="col-sm-6">
                         <div style="margin-top: 10px;">
-
                             <input id="upload_button" type="file" name="file" class="btn btn-default"/>
                             <button id="choose" type="button" class="btn btn-default"
                                     style="font-size: 18px;margin-top:5px;margin-bottom: 10px;width: 40%;height: 50px;">
                                 Upload File
                             </button>
-
-
                         </div>
                     </div>
                     <div class="col-sm-6">
@@ -48,7 +40,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </form>
@@ -59,15 +50,15 @@
             <div class="well" style="background-color: #FFFFFF;">
                 <h4 id="filename_source">No file selected</h4>
                 <pre>
-                            <p style="font-size:15px;" align="left" id="source_content">...</p>
-                            </pre>
+                    <p style="font-size:15px;font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono;"
+                       align="left" id="source_content">...</p>
+                </pre>
             </div>
         </div>
         <div class="col-sm-2" style="background-color: #B3E5FC">
             <div style="background-color: #B3E5FC;">
                 <button id="button1" type="button" class="btn btn-default"
-                        style="font-size: 18px;margin-bottom: 40px;margin-top: 10dp;height: 50px;width: 100%;">
-                    ...
+                        style="font-size: 18px;margin-bottom: 40px;margin-top: 10dp;height: 50px;width: 100%;">...
                 </button>
                 <br>
                 <button id="button2" type="button" class="btn btn-default"
@@ -77,10 +68,17 @@
         </div>
         <div class="col-sm-5" style="background-color: #B3E5FC">
             <div class="well" style="background-color:#FFFFFF;">
-                <h4 id="filename_result">No file selected</h4>
+                <div style="display:flex">
+                    <h4 style="width:60%" id="filename_result">No file selected</h4>
+                    <button id="download" type="button" class="btn btn-default"
+                            style="width:40%;font-size: 18px;height: 35px;">
+                        Download File
+                    </button>
+                </div>
                 <pre>
-                            <p style="font-size:15px;" align="left" id="result_content">...</p>
-                            </pre>
+                    <p style="font-size:15px;font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono;"
+                       align="left" id="result_content">...</p>
+                </pre>
             </div>
         </div>
 
@@ -93,6 +91,8 @@
 //to clear all the controls
 $('#button1').prop('disabled', true);
 $('#button2').prop('disabled', true);
+$('#download').hide();
+
 $(document).ready(function(){
     $("#clear").click(function(){
         $('#filename_source').html('No file selected')
@@ -104,6 +104,7 @@ $(document).ready(function(){
         $('#upload_button').val('');
         $('#button1').prop('disabled', true);
         $('#button2').prop('disabled', true);
+        $('#download').hide();
     });
 
 });
@@ -160,7 +161,9 @@ function htmlEntities(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-//for converting to java class
+var outputFileName='';
+var outputContent='';
+//for converting to java class or json file (output file generated)
 $(document).ready(function(){
  $("#button2").click(function(){
      url='';
@@ -172,9 +175,12 @@ $(document).ready(function(){
 					method: 'POST',
 					success: function(data) {
 						$('#result_content').html(data['content'])
+						outputContent=data['content'];
 						console.log(data['content']);
+						outputFileName=data['filename'];
 						alert('File created successfully!');
 						$('#filename_result').html('Output file contains-')
+						$('#download').show();
 					}
 			});
 
@@ -210,6 +216,40 @@ $(document).ready(function(){
 						$('#result_content').html(text)
 						console.log(text);
 
+					}
+			});
+
+    });
+});
+
+//for initiating download of the output file
+//this could be done without any ajax request because data is available as text
+// so we can directly download it - ajax is returning the same file as text too...
+$(document).ready(function(){
+ $("#download").click(function(){
+            $.ajax({
+				    url: '/downloader/'+outputFileName,
+					data: {},
+					method: 'POST',
+					success: function(data) {
+					    console.log(data);
+					    ext=outputFileName.split('.');
+                        ext = ext[1];
+                        var blob;
+                        if(ext=='java'){
+                            blob = new Blob([data], { type: 'text/x-java-source,java' });
+                        }else{
+                        //to convert the data from object to a string
+                            //data=JSON.stringify(data);
+                            blob = new Blob([outputContent], { type: 'text/plain' });
+                        }
+                        var link = document.createElement("a");
+                        link.href = window.URL.createObjectURL(blob);
+                        link.style = "visibility:hidden";
+                        link.download = outputFileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
 					}
 			});
 

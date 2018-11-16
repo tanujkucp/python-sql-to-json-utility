@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory, current_app
 from werkzeug.utils import secure_filename
 import os
 
@@ -22,14 +22,17 @@ def square():
     return data
 
 
+# stores the content of the file last uploaded
 content = ''
+UPLOAD_FOLDER = 'upload/'
+DOWNLOAD_FOLDER = 'data/'
 
 
 @app.route('/uploader', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         f = request.files['file']
-        UPLOAD_FOLDER = 'upload/'
+        global UPLOAD_FOLDER
         filename = secure_filename(f.filename)
         f.save(os.path.join(UPLOAD_FOLDER, filename))
         text = readFile(filename)
@@ -39,6 +42,14 @@ def upload_file():
         data['content'] = content
         data = jsonify(data)
         return data
+
+
+@app.route('/downloader/<path:filename>', methods=['GET', 'POST'])
+def download(filename):
+    global DOWNLOAD_FOLDER
+    uploads = os.path.join(current_app.root_path, DOWNLOAD_FOLDER)
+    print(uploads)
+    return send_from_directory(directory=uploads, filename=filename, as_attachment=True)
 
 
 @app.route('/json/2', methods=['GET', 'POST'])

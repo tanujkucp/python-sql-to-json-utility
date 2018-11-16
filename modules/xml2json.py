@@ -1,10 +1,12 @@
 from flask import jsonify
 
+outputFile='outputJSON.json'
 
 def main(contents):
+    global outputFile
     str = xml2json(contents)
     writeFile(str)
-    text={'content':str}
+    text={'content':str,'filename':outputFile}
     text=jsonify(text)
     return text
 
@@ -53,8 +55,9 @@ def xml2json(contents):
 
 
 def writeFile(str):
+    global outputFile
     try:
-        f = open('data/outputJSON.json', 'w+')
+        f = open('data/'+outputFile, 'w+')
         f.write(str)
         print('JSON file created successfully!')
     except:
