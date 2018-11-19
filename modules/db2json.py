@@ -4,8 +4,8 @@ from flask import jsonify
 def main():
     db = connectDB()
     data = fetch(db)
-    data = {'source': data}
     json=convertToJson(data)
+    data = {'source': data}
     data['result'] = json
     text = jsonify(data)
     return text
@@ -22,16 +22,19 @@ def connectDB():
 def fetch(db):
     try:
         cursor = db.cursor()
-        cursor.execute('SELECT * FROM CONTACTS')
+        cursor.execute('SELECT * FROM CONTACTS2')
         data = cursor.fetchall()
-        print('Table contains-\n')
-        print(data)
         return data
     except:
         print('An error occurred while fetching data!\n')
 
 def convertToJson(data):
-    return ''
-
-
-main()
+   json='{\n"data" : [\n'
+   for row in data:
+       start=''
+       if row != data[0]: start+=',\n'
+       start+='{\n'
+       start+='"id" : '+str(row[0])+',\n"name" : "' + row[1]+'",\n"email" : "'+row[2]+'",\n"mobile" : "'+row[3]+'"\n}'
+       json+=start
+   json+='\n]\n}'
+   return json

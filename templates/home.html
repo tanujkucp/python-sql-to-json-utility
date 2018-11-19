@@ -32,11 +32,18 @@
                             </button>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-2">
                         <div style="margin-top: 40px;">
-                            <button id="fetch" type="button" class="btn btn-default"
-                                    style="font-size: 18px;margin-bottom: 20px;width: 60%;height: 50px;">
-                                Fetch DB
+                            <button id="fetchjson" type="button" class="btn btn-default"
+                                    style="font-size: 18px;margin-bottom: 20px;width: 90%;height: 50px;">
+                                Export JSON
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div style="margin-top: 40px;">
+                            <button id="fetchxml" type="button" class="btn btn-default"
+                                    style="font-size: 18px;margin-bottom: 20px;width: 90%;height: 50px;">Export XML
                             </button>
                         </div>
                     </div>
@@ -271,9 +278,23 @@ $(document).ready(function(){
 
 //to show the data of the database in json
 $(document).ready(function(){
- $("#fetch").click(function(){
-            $.ajax({
-				    url: '/fetch/1',
+ $("#fetchjson").click(function(){
+            fetch(1);
+
+    });
+});
+
+//to show the data of the database in xml
+$(document).ready(function(){
+ $("#fetchxml").click(function(){
+            fetch(2);
+
+    });
+});
+
+function fetch(num){
+$.ajax({
+				    url: '/fetch/'+num,
 					data: {},
 					method: 'POST',
 					success: function(data) {
@@ -286,9 +307,7 @@ $(document).ready(function(){
 						$('#filename_result').html('DB JSON Export');
 					}
 			});
-
-    });
-});
+}
 
 
 </script>

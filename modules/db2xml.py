@@ -26,7 +26,6 @@ def fetch(db):
         cursor = db.cursor()
         cursor.execute('SELECT * FROM CONTACTS')
         data = cursor.fetchall()
-        print('Table contains-\n')
         print(data)
         return data
     except:
@@ -34,4 +33,7 @@ def fetch(db):
 
 
 def convertToXml(data):
-    return ''
+    xml=''
+
+
+    return xml
