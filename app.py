@@ -6,6 +6,8 @@ import modules.json2db as j2db
 import modules.json2java as j2java
 import modules.xml2db as x2db
 import modules.xml2json as x2j
+import modules.db2json as db2j
+import modules.db2xml as db2xml
 
 app = Flask(__name__)
 
@@ -50,6 +52,12 @@ def download(filename):
     uploads = os.path.join(current_app.root_path, DOWNLOAD_FOLDER)
     print(uploads)
     return send_from_directory(directory=uploads, filename=filename, as_attachment=True)
+
+
+@app.route('/fetch/<int:option>',methods=['GET','POST'])
+def fetch(option):
+    if option==1: return db2j.main()
+    elif option==2: return db2xml.main()
 
 
 @app.route('/json/2', methods=['GET', 'POST'])

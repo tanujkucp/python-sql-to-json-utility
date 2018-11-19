@@ -23,19 +23,27 @@
                     <p style="font-size: 25px">Choose and upload the source file.</p>
                 </div>
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <div style="margin-top: 10px;">
                             <input id="upload_button" type="file" name="file" class="btn btn-default"/>
                             <button id="choose" type="button" class="btn btn-default"
-                                    style="font-size: 18px;margin-top:5px;margin-bottom: 10px;width: 40%;height: 50px;">
+                                    style="font-size: 18px;margin-top:5px;margin-bottom: 10px;width: 60%;height: 50px;">
                                 Upload File
                             </button>
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
+                        <div style="margin-top: 40px;">
+                            <button id="fetch" type="button" class="btn btn-default"
+                                    style="font-size: 18px;margin-bottom: 20px;width: 60%;height: 50px;">
+                                Fetch DB
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
                         <div style="margin-top: 40px;">
                             <button id="clear" type="button" class="btn btn-default"
-                                    style="font-size: 18px;margin-bottom: 20px;width: 40%;height: 50px;">Clear all
+                                    style="font-size: 18px;margin-bottom: 20px;width: 60%;height: 50px;">Clear all
                             </button>
                         </div>
                     </div>
@@ -201,9 +209,19 @@ $(document).ready(function(){
 						console.log(data['content']);
 						if(data['status']) alert('Data imported successfully!');
 						else alert('Import failed, Similar data already exists!');
-						$('#filename_result').html('Database contains-')
-						var array=data['content'];
-						var text='<table class="table table-hover">';
+						$('#filename_result').html('Database contains-');
+						table=showTable(data['content']);
+						$('#result_content').html(table)
+						console.log(text);
+
+					}
+			});
+
+    });
+});
+
+function showTable(array){
+var text='<table class="table table-hover">';
 						text+='<tr><th>id</th><th>name</th><th>email</th><th>phone</th></tr>';
 						array.forEach(function(value){
 						    text+='<tr>';
@@ -213,14 +231,9 @@ $(document).ready(function(){
 						    text+='</tr>';
 						});
 						text+='</table>';
-						$('#result_content').html(text)
-						console.log(text);
+						return text;
 
-					}
-			});
-
-    });
-});
+}
 
 //for initiating download of the output file
 //this could be done without any ajax request because data is available as text
@@ -250,6 +263,27 @@ $(document).ready(function(){
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
+					}
+			});
+
+    });
+});
+
+//to show the data of the database in json
+$(document).ready(function(){
+ $("#fetch").click(function(){
+            $.ajax({
+				    url: '/fetch/1',
+					data: {},
+					method: 'POST',
+					success: function(data) {
+						$('#result_content').html(data['result']);
+						table=showTable(data['source']);
+						$('#source_content').html(table);
+						console.log(data['result']);
+						alert('Database fetched successfully!');
+						$('#filename_source').html('Database contains-');
+						$('#filename_result').html('DB JSON Export');
 					}
 			});
 
