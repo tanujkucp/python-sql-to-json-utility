@@ -205,6 +205,7 @@ $(document).ready(function(){
 //for importing to SQL server
 $(document).ready(function(){
  $("#button1").click(function(){
+ $('#download').hide();
     url='';
      if(ext=='json') url='/json/1';
      else url='/xml/1';
@@ -247,31 +248,29 @@ var text='<table class="table table-hover">';
 // so we can directly download it - ajax is returning the same file as text too...
 $(document).ready(function(){
  $("#download").click(function(){
-            $.ajax({
-				    url: '/downloader/'+outputFileName,
-					data: {},
-					method: 'POST',
-					success: function(data) {
-					    console.log(data);
-					    ext=outputFileName.split('.');
-                        ext = ext[1];
-                        var blob;
-                        if(ext=='java'){
-                            blob = new Blob([data], { type: 'text/x-java-source,java' });
-                        }else{
-                        //to convert the data from object to a string
-                            //data=JSON.stringify(data);
-                            blob = new Blob([outputContent], { type: 'text/plain' });
-                        }
-                        var link = document.createElement("a");
-                        link.href = window.URL.createObjectURL(blob);
-                        link.style = "visibility:hidden";
-                        link.download = outputFileName;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-					}
-			});
+        createDownload(outputContent);
+
+            <!--$.ajax({-->
+				    <!--url: '/downloader/'+outputFileName,-->
+					<!--data: {},-->
+					<!--method: 'POST',-->
+					<!--success: function(data) {-->
+					    <!--console.log(data);-->
+					    <!--ext=outputFileName.split('.');-->
+                        <!--ext = ext[1];-->
+                        <!--var blob;-->
+                        <!--if(ext=='java'){-->
+                           <!--// blob = new Blob([data], { type: 'text/x-java-source,java' });-->
+                           <!--createDownload(data);-->
+                        <!--}else{-->
+                        <!--//to convert the data from object to a string-->
+                            <!--//data=JSON.stringify(data);-->
+
+                            <!--createDownload(outputContent);-->
+                        <!--}-->
+
+					<!--}-->
+			<!--});-->
 
     });
 });
@@ -293,21 +292,45 @@ $(document).ready(function(){
 });
 
 function fetch(num){
-$.ajax({
+        $.ajax({
 				    url: '/fetch/'+num,
 					data: {},
 					method: 'POST',
 					success: function(data) {
-						$('#result_content').html(data['result']);
+					    $('#download').show();
+					    outputContent=data['result'];
+					    if(num==1){
+					     $('#result_content').html(data['result']);
+					     $('#filename_result').html('DB JSON Export');
+					     outputFileName='outputJSON.json';
+					     }
+						else {
+						$('#result_content').html(htmlEntities(data['result']));
+						 $('#filename_result').html('DB XML Export');
+						 outputFileName='outputXML.xml';
+						}
 						table=showTable(data['source']);
 						$('#source_content').html(table);
 						console.log(data['result']);
 						alert('Database fetched successfully!');
 						$('#filename_source').html('Database contains-');
-						$('#filename_result').html('DB JSON Export');
+
 					}
 			});
 }
+
+function createDownload(text){
+blob = new Blob([text], { type: 'text/plain' });
+var link = document.createElement("a");
+                        link.href = window.URL.createObjectURL(blob);
+                        link.style = "visibility:hidden";
+                        link.download = outputFileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+
+}
+
 
 
 </script>

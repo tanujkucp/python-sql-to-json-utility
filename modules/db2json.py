@@ -22,19 +22,22 @@ def connectDB():
 def fetch(db):
     try:
         cursor = db.cursor()
-        cursor.execute('SELECT * FROM CONTACTS2')
+        cursor.execute('SELECT * FROM CONTACTS')
         data = cursor.fetchall()
         return data
     except:
         print('An error occurred while fetching data!\n')
 
 def convertToJson(data):
-   json='{\n"data" : [\n'
+   json='{\n  "data" : [\n'
    for row in data:
        start=''
        if row != data[0]: start+=',\n'
-       start+='{\n'
-       start+='"id" : '+str(row[0])+',\n"name" : "' + row[1]+'",\n"email" : "'+row[2]+'",\n"mobile" : "'+row[3]+'"\n}'
+       start+='\t{\n'
+       start+='\t  "id" : '+str(row[0])+',' \
+                '\n\t  "name" : "' + row[1]+'",' \
+                '\n\t  "email" : "'+row[2]+'",' \
+                '\n\t  "mobile" : "'+row[3]+'"\n\t}'
        json+=start
-   json+='\n]\n}'
+   json+='\n  ]\n}'
    return json

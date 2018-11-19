@@ -5,8 +5,8 @@ from flask import jsonify
 def main():
     db = connectDB()
     data = fetch(db)
-    data = {'source': data}
     xml = convertToXml(data)
+    data = {'source': data}
     data['result'] = xml
     text = jsonify(data)
     return text
@@ -33,7 +33,14 @@ def fetch(db):
 
 
 def convertToXml(data):
-    xml=''
-
-
+    xml='<students> '
+    for row in data:
+        start=''
+        start+='\n<student> \n \t<id>'+str(row[0])+'</id>' \
+                '\n \t<name>'+row[1]+'</name>' \
+                '\n\t<email>'+row[2]+'</email>' \
+                '\n\t<mobile>'+row[3]+'</mobile>' \
+                '\n</student>'
+        xml += start
+    xml += '\n</students>'
     return xml
