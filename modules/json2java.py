@@ -1,10 +1,16 @@
+from flask import jsonify
 
+outputFile='outputJava.java'
 
 def main(contents):
+    global outputFile
     allVariables = parseJSON(contents)
     file = openOutputFile()
     if file is not None and allVariables is not None:
-        writeToFile(file,allVariables)
+        text=writeToFile(file,allVariables)
+        text= {'content': text, 'filename': outputFile}
+        text=jsonify(text)
+        return text
 
 
 def parseJSON(contents):
@@ -52,29 +58,31 @@ def parseJSON(contents):
 
 
 def writeToFile(file, allVariables):
-    file.write('public class JSONmodel {\n\n')
+    file.write('public class JavaModel {\n\n')
     for variable in allVariables:
         file.write('\tprivate '+allVariables[variable]+' '+variable+';\n')
-    file.write('\n\tpublic JSONmodel() { }\n\n}')
+    file.write('\n\tpublic JavaModel() { }\n\n}')
     file.close()
     print('Java model made successfully from JSON.\n')
     input=readFile()
     if input is not None:
         text = input.read()
-        print(text)
+        return text
 
 
 def openOutputFile():
+    global outputFile
     try:
-        file = open('data/JSONmodel.java', 'w')
+        file = open('data/'+outputFile, 'w')
         return file
     except IOError as e:
         print(e)
         return None
 
 def readFile():
+    global outputFile
     try:
-        file = open('data/JSONmodel.java', 'r')
+        file = open('data/'+outputFile, 'r')
         return file
     except IOError as e:
         print(e)

@@ -11,18 +11,30 @@ import modules.xml2json as x2j
 def showMainMenu():
     print('^^^^^^^^^^^^Welcome to the main menu^^^^^^^^^^^^\n')
     print('What type of file do you have?\n1. JSON \t2. XML\n')
-    answer = int(input('Answer:'))
+    try:
+        answer = int(input('Answer:'))
+    except ValueError:
+        print('Given answer is not a valid value!\n')
+        showMainMenu()
     showNextMenu(answer)
 
 
 def showNextMenu(choice1):
     if choice1 == 1:
         print('Choose an operation for JSON-\n1. JSON to SQL DB\t2. JSON to Java Class\n')
-        answer = int(input('Answer:'))
+        try:
+            answer = int(input('Answer:'))
+        except ValueError:
+            print('Given answer is not a valid value!\n')
+            showNextMenu(choice1)
         performJSON(choice1, answer)
     elif choice1 == 2:
         print('Choose an operation for XML-\n1. XML to SQL DB\t2. XML to JSON\n')
-        answer = int(input('Answer:'))
+        try:
+            answer = int(input('Answer:'))
+        except ValueError:
+            print('Given answer is not a valid value!\n')
+            showNextMenu(choice1)
         performXML(choice1, answer)
     else:
         print('Wrong selection!')

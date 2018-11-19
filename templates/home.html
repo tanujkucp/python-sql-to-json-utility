@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>JSON-XML Utility</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body style="background-color: #B3E5FC">
+
+<center>
+    <form action="/uploader" method="POST" id="form" enctype="multipart/form-data">
+        <div style="width :80%;background-color: #B3E5FC">
+            <div class="panel panel-default">
+                <div class="well bg-success" style="height:75px;background-color: #FFFFFF;">
+                    <div class='well' style="width: 65%;background-color: #FFFFFF;">
+                        <h1 style="font-size:30px;width: 75%;height:50px;">JSON-XML UTILITY</h1></div>
+                </div>
+                <div style="height: 4px;background-color:#4FC3F7;"></div>
+                <div style="margin-top: 10px;">
+                    <p style="font-size: 25px">Choose and upload the source file.</p>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div style="margin-top: 10px;">
+                            <input id="upload_button" type="file" name="file" class="btn btn-default"/>
+                            <button id="choose" type="button" class="btn btn-default"
+                                    style="font-size: 18px;margin-top:5px;margin-bottom: 10px;width: 60%;height: 50px;">
+                                Upload File
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div style="margin-top: 40px;">
+                            <button id="fetchjson" type="button" class="btn btn-default"
+                                    style="font-size: 18px;margin-bottom: 20px;width: 90%;height: 50px;">
+                                Export JSON
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div style="margin-top: 40px;">
+                            <button id="fetchxml" type="button" class="btn btn-default"
+                                    style="font-size: 18px;margin-bottom: 20px;width: 90%;height: 50px;">Export XML
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div style="margin-top: 40px;">
+                            <button id="clear" type="button" class="btn btn-default"
+                                    style="font-size: 18px;margin-bottom: 20px;width: 60%;height: 50px;">Clear all
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</center>
+<center>
+    <div style="margin-top:10px;width:90%;">
+        <div class="col-sm-5" style="background-color: #B3E5FC">
+            <div class="well" style="background-color: #FFFFFF;">
+                <h4 id="filename_source">No file selected</h4>
+                <pre>
+                    <p style="font-size:15px;font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono;"
+                       align="left" id="source_content">...</p>
+                </pre>
+            </div>
+        </div>
+        <div class="col-sm-2" style="background-color: #B3E5FC">
+            <div style="background-color: #B3E5FC;">
+                <button id="button1" type="button" class="btn btn-default"
+                        style="font-size: 18px;margin-bottom: 40px;margin-top: 10dp;height: 50px;width: 100%;">...
+                </button>
+                <br>
+                <button id="button2" type="button" class="btn btn-default"
+                        style="font-size: 16px;margin-bottom: 40px;height: 50px;width: 100%;">...
+                </button>
+            </div>
+        </div>
+        <div class="col-sm-5" style="background-color: #B3E5FC">
+            <div class="well" style="background-color:#FFFFFF;">
+                <div style="display:flex">
+                    <h4 style="width:60%" id="filename_result">No file selected</h4>
+                    <button id="download" type="button" class="btn btn-default"
+                            style="width:40%;font-size: 18px;height: 35px;">
+                        Download File
+                    </button>
+                </div>
+                <pre>
+                    <p style="font-size:15px;font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono;"
+                       align="left" id="result_content">...</p>
+                </pre>
+            </div>
+        </div>
+
+    </div>
+
+
+</center>
+
+<script>
+//to clear all the controls
+$('#button1').prop('disabled', true);
+$('#button2').prop('disabled', true);
+$('#download').hide();
+
+$(document).ready(function(){
+    $("#clear").click(function(){
+        $('#filename_source').html('No file selected')
+        $('#filename_result').html('No file selected')
+		$('#source_content').html('...')
+		$('#result_content').html('...')
+		$('#button1').html('...')
+		$('#button2').html('...')
+        $('#upload_button').val('');
+        $('#button1').prop('disabled', true);
+        $('#button2').prop('disabled', true);
+        $('#download').hide();
+    });
+
+});
+
+//to upload and read the file
+var ext;
+$(document).ready(function(){
+ $("#choose").click(function(){
+ var filename = $('input[type=file]').val().split('\\').pop();
+ console.log('File selected: '+filename);
+ ext=filename.split('.');
+ ext = ext[1];
+ if(ext!='json' && ext!='xml'){
+ console.log(ext);
+ if(ext == undefined) alert('No file selected!');
+ else{
+  alert('Only JSON and XML files are supported! Try again.');
+  $('#upload_button').val('');
+  }
+ }else{
+ var form_data = new FormData($('#form')[0]);
+        $.ajax({
+					url: '/uploader',
+					data: form_data,
+					method: 'POST',
+					contentType: false,
+                    cache: false,
+                    processData: false,
+					success: function(data) {
+						$('#filename_source').html('Source File: '+data['filename'])
+						$('#filename_result').html('Result')
+						console.log(data['content']);
+						if(ext=='json'){
+						    $('#button1').html('Import to SQL')
+						    $('#button2').html('Convert to Java')
+						    $('#source_content').html(''+data['content'])
+						}else{
+						    $('#button1').html('Import to SQL')
+						    $('#button2').html('Convert to JSON')
+                            $('#source_content').html(''+htmlEntities(data['content']))
+						}
+                        $('#button1').prop('disabled', false);
+                        $('#button2').prop('disabled', false);
+						alert('File uploaded successfully!');
+					}
+				});
+ }
+
+    });
+});
+
+//for formatting xml string
+function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+var outputFileName='';
+var outputContent='';
+//for converting to java class or json file (output file generated)
+$(document).ready(function(){
+ $("#button2").click(function(){
+     url='';
+     if(ext=='json') url='/json/2';
+     else url='/xml/2';
+            $.ajax({
+				    url: url,
+					data: {},
+					method: 'POST',
+					success: function(data) {
+						$('#result_content').html(data['content'])
+						outputContent=data['content'];
+						console.log(data['content']);
+						outputFileName=data['filename'];
+						alert('File created successfully!');
+						$('#filename_result').html('Output file contains-')
+						$('#download').show();
+					}
+			});
+
+    });
+});
+
+//for importing to SQL server
+$(document).ready(function(){
+ $("#button1").click(function(){
+ $('#download').hide();
+    url='';
+     if(ext=='json') url='/json/1';
+     else url='/xml/1';
+            $.ajax({
+				    url: url,
+					data: {},
+					method: 'POST',
+					success: function(data) {
+						console.log(data['content']);
+						if(data['status']) alert('Data imported successfully!');
+						else alert('Import failed, Similar data already exists!');
+						$('#filename_result').html('Database contains-');
+						table=showTable(data['content']);
+						$('#result_content').html(table)
+						console.log(text);
+
+					}
+			});
+
+    });
+});
+
+function showTable(array){
+var text='<table class="table table-hover">';
+						text+='<tr><th>id</th><th>name</th><th>email</th><th>phone</th></tr>';
+						array.forEach(function(value){
+						    text+='<tr>';
+						    value.forEach(function(item){
+						        text+='<td>'+item+'</td>';
+						    });
+						    text+='</tr>';
+						});
+						text+='</table>';
+						return text;
+
+}
+
+//for initiating download of the output file
+//this could be done without any ajax request because data is available as text
+// so we can directly download it - ajax is returning the same file as text too...
+$(document).ready(function(){
+ $("#download").click(function(){
+        createDownload(outputContent);
+
+            <!--$.ajax({-->
+				    <!--url: '/downloader/'+outputFileName,-->
+					<!--data: {},-->
+					<!--method: 'POST',-->
+					<!--success: function(data) {-->
+					    <!--console.log(data);-->
+					    <!--ext=outputFileName.split('.');-->
+                        <!--ext = ext[1];-->
+                        <!--var blob;-->
+                        <!--if(ext=='java'){-->
+                           <!--// blob = new Blob([data], { type: 'text/x-java-source,java' });-->
+                           <!--createDownload(data);-->
+                        <!--}else{-->
+                        <!--//to convert the data from object to a string-->
+                            <!--//data=JSON.stringify(data);-->
+
+                            <!--createDownload(outputContent);-->
+                        <!--}-->
+
+					<!--}-->
+			<!--});-->
+
+    });
+});
+
+//to show the data of the database in json
+$(document).ready(function(){
+ $("#fetchjson").click(function(){
+            fetch(1);
+
+    });
+});
+
+//to show the data of the database in xml
+$(document).ready(function(){
+ $("#fetchxml").click(function(){
+            fetch(2);
+
+    });
+});
+
+function fetch(num){
+        $.ajax({
+				    url: '/fetch/'+num,
+					data: {},
+					method: 'POST',
+					success: function(data) {
+					    $('#download').show();
+					    outputContent=data['result'];
+					    if(num==1){
+					     $('#result_content').html(data['result']);
+					     $('#filename_result').html('DB JSON Export');
+					     outputFileName='outputJSON.json';
+					     }
+						else {
+						$('#result_content').html(htmlEntities(data['result']));
+						 $('#filename_result').html('DB XML Export');
+						 outputFileName='outputXML.xml';
+						}
+						table=showTable(data['source']);
+						$('#source_content').html(table);
+						console.log(data['result']);
+						alert('Database fetched successfully!');
+						$('#filename_source').html('Database contains-');
+
+					}
+			});
+}
+
+function createDownload(text){
+blob = new Blob([text], { type: 'text/plain' });
+var link = document.createElement("a");
+                        link.href = window.URL.createObjectURL(blob);
+                        link.style = "visibility:hidden";
+                        link.download = outputFileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+
+}
+
+
+
+</script>
+
+</body>
+
+</html>
