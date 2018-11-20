@@ -17,15 +17,9 @@ def index():
     return render_template('home.html')
 
 
-@app.route('/check', methods=['POST', 'GET'])
-def square():
-    data = {'data': 4}
-    data = jsonify(data)
-    return data
-
-
 # stores the content of the file last uploaded
 content = ''
+
 UPLOAD_FOLDER = 'upload/'
 DOWNLOAD_FOLDER = 'data/'
 
